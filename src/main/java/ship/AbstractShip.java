@@ -22,8 +22,21 @@ public class AbstractShip {
         return this.course;
     }
 
-    public void setOrientation(orientation course) {
-        this.course = course;
+    public void setOrientation(String scourse) {
+        switch (scourse) {
+            case "e":
+                course = orientation.EAST;
+                break;
+            case "w":
+                course = orientation.WEST;
+                break;
+            case "n":
+                course = orientation.NORTH;
+                break;
+            case "s":
+                course = orientation.SOUTH;
+                break;
+        }
     }
 
     public AbstractShip() {
