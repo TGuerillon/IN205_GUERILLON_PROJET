@@ -1,16 +1,12 @@
 package ship;
 
-enum orientation {
-    NORTH, EAST, SOUTH, WEST
-}
-
 public class AbstractShip {
     private char label;
     private String name;
     private int size;
     private orientation course;
 
-    public char getLaber() {
+    public char getLabel() {
         return this.label;
     }
 
