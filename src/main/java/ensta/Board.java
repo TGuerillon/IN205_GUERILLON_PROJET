@@ -1,18 +1,20 @@
 package ensta;
 
+import java.awt.Color;
+
 import ship.*;
 
 public class Board implements IBoard {
     private String name;
-    private char[][] Ships;
-    private boolean[][] Hits;
+    private ShipState[][] Ships;
+    private Boolean[][] Hits;
 
     public int getSize() {
         return this.Hits[0].length;
     }
 
     public boolean hasShip(int x, int y) {
-        return (Ships[x][y] != '.');
+        return (Ships[x][y] != null);
     }
 
     public void putShip(AbstractShip ship, int x, int y) throws ArrayIndexOutOfBoundsException {
@@ -26,7 +28,7 @@ public class Board implements IBoard {
                 for (int i = 0; i < ship.getSize(); i++) {
                     if (hasShip(x + i, y))
                         throw new ArrayIndexOutOfBoundsException("There is already a ship there");
-                    Ships[x + i][y] = ship.getLabel();
+                    Ships[x + i][y] = new ShipState(ship);
                 }
                 break;
             case WEST:
@@ -35,7 +37,7 @@ public class Board implements IBoard {
                 for (int i = 0; i < ship.getSize(); i++) {
                     if (hasShip(x - i, y))
                         throw new ArrayIndexOutOfBoundsException("There is already a ship there");
-                    Ships[x - i][y] = ship.getLabel();
+                    Ships[x - i][y] = new ShipState(ship);
                 }
                 break;
             case NORTH:
@@ -44,7 +46,7 @@ public class Board implements IBoard {
                 for (int i = 0; i < ship.getSize(); i++) {
                     if (hasShip(x, y - i))
                         throw new ArrayIndexOutOfBoundsException("There is already a ship there");
-                    Ships[x][y - i] = ship.getLabel();
+                    Ships[x][y - i] = new ShipState(ship);
                 }
                 break;
             case SOUTH:
@@ -53,7 +55,7 @@ public class Board implements IBoard {
                 for (int i = 0; i < ship.getSize(); i++) {
                     if (hasShip(x, y + i))
                         throw new ArrayIndexOutOfBoundsException("There is already a ship there");
-                    Ships[x][y + i] = ship.getLabel();
+                    Ships[x][y + i] = new ShipState(ship);
                 }
                 break;
         }
@@ -69,12 +71,12 @@ public class Board implements IBoard {
 
     public Board(String name, int size) {
         this.name = name;
-        this.Ships = new char[size][size];
-        this.Hits = new boolean[size][size];
+        this.Ships = new ShipState[size][size];
+        this.Hits = new Boolean[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                this.Ships[i][j] = '.';
-                this.Hits[i][j] = false;
+                this.Ships[i][j] = null;
+                this.Hits[i][j] = null;
             }
         }
     }
@@ -94,13 +96,21 @@ public class Board implements IBoard {
         for (int j = 0; j < length; j++) {
             for (int i = 0; i < 2 * length + 4; i++) {
                 if (i < length) {
-                    System.out.print(this.Ships[i][j]);
+                    System.out.print(this.Ships[i][j].toString());
                 }
                 if (length < i && i < length + 4) {
                     System.out.print(' ');
                 }
                 if (i > length + 4) {
-                    System.out.print(this.Hits[i - length - 4][j] ? 'x' : '.');
+                    if (this.Hits[i - length - 4][j]){
+                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.RED));
+                    }
+                    else if (!(this.Hits[i - length - 4][j])) {
+                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.WHITE));
+                    }
+                    else {
+                        System.out.print('.');
+                    }
                 }
             }
             System.out.println();

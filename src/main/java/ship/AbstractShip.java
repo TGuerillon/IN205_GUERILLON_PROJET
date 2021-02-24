@@ -5,6 +5,7 @@ public class AbstractShip {
     private String name;
     private int size;
     private orientation course;
+    private int strikeCount;
 
     public char getLabel() {
         return this.label;
@@ -37,6 +38,14 @@ public class AbstractShip {
                 course = orientation.SOUTH;
                 break;
         }
+    }
+
+    public void addStrike(){
+        strikeCount++;
+    }
+
+    public boolean isSunk(){
+        return (strikeCount==size);
     }
 
     public AbstractShip() {
