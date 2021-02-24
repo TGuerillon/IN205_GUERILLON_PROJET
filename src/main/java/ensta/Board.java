@@ -9,6 +9,24 @@ public class Board implements IBoard {
     private ShipState[][] Ships;
     private Boolean[][] Hits;
 
+    public Hit sendHit(int x, int y) throws Exception {
+        if (this.getHit(x, y) != null) {
+            throw new Exception("Already shot there");
+        } else if (this.hasShip(x, y)) {
+            this.setHit(true, x, y);
+            Ships[x][y].addStrike();
+            if (Ships[x][y].isSunk()) {
+                System.out.println(Ships[x][y].getShip().getName() + " has been sinked");
+                return Hit.fromInt(Ships[x][y].getShip().getSize());
+            } else {
+                return Hit.STRIKE;
+            }
+        } else {
+            this.setHit(false, x, y);
+            return Hit.MISS;
+        }
+    }
+
     public int getSize() {
         return this.Hits[0].length;
     }
@@ -62,7 +80,7 @@ public class Board implements IBoard {
     }
 
     public void setHit(boolean hit, int x, int y) {
-        Hits[x][y] = hit;
+        this.Hits[x][y] = hit;
     }
 
     public Boolean getHit(int x, int y) {
@@ -87,29 +105,26 @@ public class Board implements IBoard {
 
     public void print() {
         int length = this.Ships[0].length;
-        System.out.println(this.name);
         System.out.print("Ships:");
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length - 2; i++) {
             System.out.print(' ');
         }
         System.out.println("Hits:");
         for (int j = 0; j < length; j++) {
-            for (int i = 0; i < 2 * length + 4; i++) {
+            for (int i = 0; i < 2 * length + 5; i++) {
                 if (i < length) {
-                    System.out.print(this.Ships[i][j].toString());
+                    System.out.print((this.Ships[i][j] != null) ? this.Ships[i][j].toString() : '.');
                 }
-                if (length < i && i < length + 4) {
+                if (length < i && i < length + 5) {
                     System.out.print(' ');
                 }
-                if (i > length + 4) {
-                    if (this.Hits[i - length - 4][j]){
-                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.RED));
-                    }
-                    else if (!(this.Hits[i - length - 4][j])) {
-                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.WHITE));
-                    }
-                    else {
+                if (i >= length + 5) {
+                    if (this.Hits[i - length - 5][j] == null) {
                         System.out.print('.');
+                    } else if (this.Hits[i - length - 5][j] == false) {
+                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.WHITE));
+                    } else {
+                        System.out.print(ColorUtil.colorize('X', ColorUtil.Color.RED));
                     }
                 }
             }
